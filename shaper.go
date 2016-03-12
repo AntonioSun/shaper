@@ -40,49 +40,49 @@ func NewFilter() *Shaper {
 // Copy returns a copy of the original object, instead of editing in-place,
 // so make sure you've already got a reference to the original
 // This should NEVER be hung off of a NewFilter string, or the original NewFilter will be lost
-func (m *Shaper) Copy() *Shaper {
+func (me *Shaper) Copy() *Shaper {
 	return &Shaper{
-		ShaperStack: m.ShaperStack,
+		ShaperStack: me.ShaperStack,
 	}
 }
 
 // Call this on the returned object to actually process a string
-func (m *Shaper) Process(s string) string {
-	return m.ShaperStack(s)
+func (me *Shaper) Process(s string) string {
+	return me.ShaperStack(s)
 }
 
 // Use this to apply arbitrary filters
-func (m *Shaper) AddFilter(f func(string) string) *Shaper {
-	m.ShaperStack = func(a func(string) string, b func(string) string) func(string) string {
+func (me *Shaper) AddFilter(f func(string) string) *Shaper {
+	me.ShaperStack = func(a func(string) string, b func(string) string) func(string) string {
 		return func(s string) string {
 			return a(b(s))
 		}
-	}(f, m.ShaperStack)
-	return m
+	}(f, me.ShaperStack)
+	return me
 }
 
-func (m *Shaper) ApplyToLower() *Shaper {
-	m.AddFilter(strings.ToLower)
-	return m
+func (me *Shaper) ApplyToLower() *Shaper {
+	me.AddFilter(strings.ToLower)
+	return me
 }
 
-func (m *Shaper) ApplyToUpper() *Shaper {
-	m.AddFilter(strings.ToUpper)
-	return m
+func (me *Shaper) ApplyToUpper() *Shaper {
+	me.AddFilter(strings.ToUpper)
+	return me
 }
 
-func (m *Shaper) ApplyReplace(old, new string, times int) *Shaper {
-	m.AddFilter(func(s string) string {
+func (me *Shaper) ApplyReplace(old, new string, times int) *Shaper {
+	me.AddFilter(func(s string) string {
 		return strings.Replace(s, old, new, times)
 	})
-	return m
+	return me
 }
 
-func (m *Shaper) ApplyRegexpReplaceAll(rexp, repl string) *Shaper {
-	m.AddFilter(func(s string) string {
+func (me *Shaper) ApplyRegexpReplaceAll(rexp, repl string) *Shaper {
+	me.AddFilter(func(s string) string {
 		return regexp.MustCompile(rexp).ReplaceAllString(s, repl)
 	})
-	return m
+	return me
 }
 
 func ShaperDemo() {
