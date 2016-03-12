@@ -2,7 +2,9 @@
 // Porgram: shaper.go
 // Purpose: mold strings into shape
 // authors: Antonio Sun (c) 2016, All rights reserved
-// Credits: https://groups.google.com/d/msg/golang-nuts/snoIyANd-8c/V_IC57y4AwAJ
+// Credits: Howard C. Shaw III
+//          https://groups.google.com/d/msg/golang-nuts/snoIyANd-8c/V_IC57y4AwAJ
+//          https://groups.google.com/d/msg/golang-nuts/snoIyANd-8c/hhOnu-lFAgAJ
 ////////////////////////////////////////////////////////////////////////////
 
 package shaper
@@ -33,6 +35,15 @@ func PassThrough(s string) string {
 // Make a new Shaper filter and start adding bits
 func NewFilter() *Shaper {
 	return &Shaper{ShaperStack: PassThrough}
+}
+
+// Copy returns a copy of the original object, instead of editing in-place,
+// so make sure you've already got a reference to the original
+// This should NEVER be hung off of a NewFilter string, or the original NewFilter will be lost
+func (m *Shaper) Copy() *Shaper {
+	return &Shaper{
+		ShaperStack: m.ShaperStack,
+	}
 }
 
 // Call this on the returned object to actually process a string
